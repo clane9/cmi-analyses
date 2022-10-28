@@ -1,0 +1,7 @@
+data/
+output/
+work/
+slurm-*
+.ipynb_checkpoints
+__pycache__
+.vscode
