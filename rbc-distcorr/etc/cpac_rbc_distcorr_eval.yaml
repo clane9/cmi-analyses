@@ -1,0 +1,20 @@
+%YAML 1.1
+---
+# CPAC Pipeline Configuration YAML file
+# Version 1.8.4
+#
+# http://fcp-indi.github.io for more info.
+#
+# Tip: This file can be edited manually with a text editor for quick modifications.
+
+FROM: rbc-options
+
+pipeline_setup:
+
+  # Name for this pipeline configuration - useful for identification.
+  # This string will be sanitized and used in filepaths
+  pipeline_name: rbc_distcorr_eval
+
+functional_preproc:
+  distortion_correction:
+    run: [On, Off]

@@ -1,0 +1,36 @@
+# Fieldmap: none; Dataset: NKI; Task: task-rest_acq-1400
+sub-A00031893_ses-BAS1
+sub-A00035377_ses-BAS1
+sub-A00035827_ses-BAS2
+sub-A00040815_ses-BAS1
+sub-A00052182_ses-FLU2
+sub-A00065992_ses-TRT
+sub-A00066860_ses-BAS1
+sub-A00066865_ses-BAS1
+sub-A00074709_ses-BAS1
+sub-A00081552_ses-FLU1
+
+# Fieldmap: epi; Dataset: HBN; Task: task-rest_run-1
+sub-NDARAA306NT2_ses-HBNsiteRU
+sub-NDARBE091BGD_ses-HBNsiteRU
+sub-NDARDZ266KET_ses-HBNsiteRU
+sub-NDARFG943GVZ_ses-HBNsiteCBIC
+sub-NDARFM229HHA_ses-HBNsiteCBIC
+sub-NDARHW933UVJ_ses-HBNsiteCBIC
+sub-NDARJL656RDA_ses-HBNsiteCBIC
+sub-NDARMB857WG7_ses-HBNsiteCBIC
+sub-NDARMG263JRX_ses-HBNsiteRU
+sub-NDARMV718DYL_ses-HBNsiteRU
+
+# Fieldmap: phasediff; Dataset: PNC; Task: task-rest_acq-singleband
+sub-1161831083_ses-PNC1
+sub-1169616649_ses-PNC1
+sub-1695950181_ses-PNC1
+sub-2824066679_ses-PNC1
+sub-3092187032_ses-PNC1
+sub-3123810007_ses-PNC1
+sub-3176046588_ses-PNC1
+sub-3185151244_ses-PNC1
+sub-3692156343_ses-PNC1
+sub-56162563_ses-PNC1
+

@@ -1,0 +1,13 @@
+data/
+test_data/
+output/
+work/
+results/
+
+*.nii.gz
+slurm-*
+job.txt
+
+.ipynb_checkpoints
+__pycache__
+.vscode

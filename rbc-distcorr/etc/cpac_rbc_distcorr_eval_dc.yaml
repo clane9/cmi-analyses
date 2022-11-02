@@ -1,0 +1,46 @@
+%YAML 1.1
+---
+# CPAC Pipeline Configuration YAML file
+# Version 1.8.4
+#
+# http://fcp-indi.github.io for more info.
+#
+# Tip: This file can be edited manually with a text editor for quick modifications.
+
+FROM: rbc-options
+
+pipeline_setup:
+
+  # Name for this pipeline configuration - useful for identification.
+  # This string will be sanitized and used in filepaths
+  pipeline_name: rbc_distcorr_eval_dc
+
+functional_preproc:
+  distortion_correction:
+    run: On
+
+timeseries_extraction:
+  run: Off
+
+amplitude_low_frequency_fluctuation:
+
+  # ALFF & f/ALFF
+  # Calculate Amplitude of Low Frequency Fluctuations (ALFF) and fractional ALFF (f/ALFF) for all voxels.
+  run: Off
+
+regional_homogeneity:
+
+  # ReHo
+  # Calculate Regional Homogeneity (ReHo) for all voxels.
+  run: Off
+
+voxel_mirrored_homotopic_connectivity:
+
+  # VMHC
+  # Calculate Voxel-mirrored Homotopic Connectivity (VMHC) for all voxels.
+  run: Off
+
+network_centrality:
+
+  # Calculate Degree, Eigenvector Centrality, or Functional Connectivity Density.
+  run: Off
