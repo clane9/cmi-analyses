@@ -15,4 +15,6 @@ git subtree add --prefix <analysis> <analysis> <commit>
 
 - [rbc-distcorr](rbc-distcorr/): Comparing C-PAC vs fmriprep
   distortion correction processing for RBC.
+- [parquet-join-query](parquet-join-query/): Benchmark of DuckDB
+  query performance over joined parquet tables.
 
