@@ -28,22 +28,25 @@ df = filtered.join(arrays, "filtered.index = arrays.index").df()
 
 More details and examples can be found [here](https://github.com/duckdb/duckdb/blob/master/examples/python/duckdb-python.py) and [here](https://duckdb.org/2021/06/25/querying-parquet.html).
 
+We compare DuckDB's performance to a more "naive" approach using pandas that reads all the data and executes the joins in batches.
+
 Here are the results of our test
 
-| nrow | nelem | runtime (s) |
-|---|---|---|
-| 1000 | 10 | 0.003757 |
-| 1000 | 100 | 0.009874 |
-| 1000 | 1000 | 0.140762 |
-| 1000 | 10000 | 0.762913 |
-| 10000 | 10 | 0.053829 |
-| 10000 | 100 | 0.110057 |
-| 10000 | 1000 | 0.269147 |
-| 10000 | 10000 | 1.407382 |
-| 100000 | 10 | 0.059533 |
-| 100000 | 100 | 0.253589 |
-| 100000 | 1000 | 1.003703 |
-| 100000 | 10000 | 2.797853 |
+|   nrow |   nelem |   runtime (DuckDB) |   runtime (pandas) |
+|-------:|--------:|-------------------:|-------------------:|
+|   1000 |      10 |         0.00729267 |         0.119576   |
+|   1000 |     100 |         0.0136764  |         0.00939533 |
+|   1000 |    1000 |         0.0761871  |         0.019083   |
+|   1000 |   10000 |         0.593045   |         0.12254    |
+|  10000 |      10 |         0.0097008  |         0.011616   |
+|  10000 |     100 |         0.0230262  |         0.0214925  |
+|  10000 |    1000 |         0.103769   |         0.110753   |
+|  10000 |   10000 |         0.806461   |         1.04455    |
+| 100000 |      10 |         0.0229186  |         0.0559437  |
+| 100000 |     100 |         0.0502371  |         0.147699   |
+| 100000 |    1000 |         0.248135   |         1.06513    |
+| 100000 |   10000 |         2.99795    |        10.3386     |
 
+Interestingly, DuckDB provides a clear performance benefit over the "naive" pandas approach in only the largest scale cases. In small cases where all the data fits easily in memory, I guess you're better off keeping things simple.
 
-In the largest case, DuckDB is able to query and process 200 rows of vector data from the 32GB `arrays` table in only 2.8s.
+(Nb. Disregard the runtime for pandas in the first case. This is probably inflated by pandas importing [PyArrow](https://arrow.apache.org/docs/python/index.html).)
