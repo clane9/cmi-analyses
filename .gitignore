@@ -3,6 +3,9 @@ test_data/
 output/
 work/
 results/
+outbox/
+figures/
+.scratch/
 
 *.nii.gz
 slurm-*
