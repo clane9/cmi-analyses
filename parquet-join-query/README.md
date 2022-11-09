@@ -1,52 +1,34 @@
 # Parquet join query
 
-In this quick experiment we benchmark the performance of [DuckDB](https://duckdb.org/) on querying large vector data from a [parquet](https://parquet.apache.org/) database.
+In this quick experiment we benchmark the performance of a few different tools on querying large vector data from a [parquet](https://parquet.apache.org/) database.
+
+## Setup
 
 In [generate_datasets.ipynb](generate_datasets.ipynb), we construct synthetic datasets consisting of:
 
 - An `attrib` table containing two columns: an integer `index` in `[0, nrows)` and a random float `attrib` in `[0, 1]`.
 - An `arrays` table also containing a matching `index`, as well as an `array` column containing random NumPy arrays of shape `(nelem,)`.
 
-In [query_analysis.ipynb](query_analysis.ipynb), we evaluate the performance of querying the `arrays` table using a filter generated from `attrib`
+These datasets are of modest size, ranging up to 100K rows and 10K array elements (32GB).
 
-```python
-# read parquet tables as "relations"
-# this is lazy and does not read the full data into memory
-attrib = duckdb.from_parquet("attrib.parquet")
-arrays = duckdb.from_parquet("arrays-*.parquet")
+In [query_benchmark.py](query_benchmark.py), we query from the `arrays` table using a filter generated from `attrib`. We benchmark the following tools on this task
 
-# filter on attrib
-threshold = 200 / len(attrib)
-filtered = attrib.filter(f"attrib < {threshold:.6f}")
+- [Dask](https://www.dask.org/): a flexible library for parallel computing in Python.
+- [DuckDB](https://duckdb.org/): an in-process SQL OLAP database management system.
+- [Vaex](https://vaex.io/): a python library for lazy Out-of-Core DataFrames.
 
-# join with arrays
-# the returned df is a pandas DataFrame
-filtered = filtered.set_alias("filtered")
-arrays = arrays.set_alias("arrays")
-df = filtered.join(arrays, "filtered.index = arrays.index").df()
-```
+As a baseline, we compare the tools with a "naive" approach using [pandas](https://pandas.pydata.org/).
 
-More details and examples can be found [here](https://github.com/duckdb/duckdb/blob/master/examples/python/duckdb-python.py) and [here](https://duckdb.org/2021/06/25/querying-parquet.html).
+## Results
 
-We compare DuckDB's performance to a more "naive" approach using pandas that reads all the data and executes the joins in batches.
+![query benchmark runtime scaling](figures/query_benchmark.png)
 
-Here are the results of our test
+We observe that no single tool performs the best across data scales (from 136K to 32GB). The "naive" pandas baseline performs the best at the small and medium scales, and is only overtaken by DuckDB and then Vaex at larger scale.
 
-|   nrow |   nelem |   runtime (DuckDB) |   runtime (pandas) |
-|-------:|--------:|-------------------:|-------------------:|
-|   1000 |      10 |         0.00729267 |         0.119576   |
-|   1000 |     100 |         0.0136764  |         0.00939533 |
-|   1000 |    1000 |         0.0761871  |         0.019083   |
-|   1000 |   10000 |         0.593045   |         0.12254    |
-|  10000 |      10 |         0.0097008  |         0.011616   |
-|  10000 |     100 |         0.0230262  |         0.0214925  |
-|  10000 |    1000 |         0.103769   |         0.110753   |
-|  10000 |   10000 |         0.806461   |         1.04455    |
-| 100000 |      10 |         0.0229186  |         0.0559437  |
-| 100000 |     100 |         0.0502371  |         0.147699   |
-| 100000 |    1000 |         0.248135   |         1.06513    |
-| 100000 |   10000 |         2.99795    |        10.3386     |
+We compared two approaches using DuckDB. One using the pandas-like python API ("duckdb"), and the other interfacing directly with the DuckDB SQL engine via `conn.query()` ("duckdb_v2"). Oddly, the second approach performed worse and showed more variability.
 
-Interestingly, DuckDB provides a clear performance benefit over the "naive" pandas approach in only the largest scale cases. In small cases where all the data fits easily in memory, I guess you're better off keeping things simple.
+Finally, in all cases it appears the overhead associated with Dask was too high. Whereas the other tools run in a single process, Dask (which is designed for very large-scale parallel applications) attempts to distribute work over several processes.
 
-(Nb. Disregard the runtime for pandas in the first case. This is probably inflated by pandas importing [PyArrow](https://arrow.apache.org/docs/python/index.html).)
+## Comments
+
+We tried to add a comparison using pure [PyArrow](https://arrow.apache.org/docs/python/index.html). However PyArrow [does not support join operations on tables with binary vector data](https://stackoverflow.com/questions/73071105/listitem-float-not-supported-in-join-non-key-field).
