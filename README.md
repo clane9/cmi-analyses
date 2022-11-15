@@ -11,6 +11,12 @@ git remote add <analysis> ssh://<user>@<server>:/path/to/remote/repo
 git subtree add --prefix <analysis> <analysis> <commit>
 ```
 
+## Updating an analysis directory
+
+```sh
+git subtree pull --prefix <analysis> <analysis> <commit>
+```
+
 ## Index
 
 - [rbc-distcorr](rbc-distcorr/): Comparing C-PAC vs fmriprep
